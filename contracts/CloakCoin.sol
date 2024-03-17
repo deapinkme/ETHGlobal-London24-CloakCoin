@@ -7,11 +7,13 @@ import { FHE, euint32, inEuint32 } from "@fhenixprotocol/contracts/FHE.sol";
 import { Permissioned, Permission } from "@fhenixprotocol/contracts/access/Permission.sol";
 
 error ErrorInsufficientFunds();
+error ErrorTimeNotPassed(); // AMS - Must allow for pass of time
 
 contract WrappingERC20 is ERC20, Permissioned {
 
     // A mapping from address to an encrypted balance.
     mapping(address => euint32) internal _encBalances;
+    mapping(address => uint256) internal _lastMintedTime; // AMS - Track last minted time for each address
     euint32 private totalEncryptedSupply = FHE.asEuint32(0);
 
     constructor(string memory name, string memory symbol)
@@ -47,10 +49,16 @@ contract WrappingERC20 is ERC20, Permissioned {
     }
 
     function mint(uint256 amount) public {
+        // AMS - Require passage of time
+        require(block.timestamp >= _lastMintedTime[msg.sender] + 30 days, "Time has not passed since last mint.");
+        _lastMintedTime[msg.sender] = block.timestamp;
         _mint(msg.sender, amount);
     }
 
     function mintEncrypted(inEuint32 calldata encryptedAmount) public {
+        // AMS - Require passage of time
+        require(block.timestamp >= _lastMintedTime[msg.sender] + 30 days, "Time has not passed since last mint.");
+        _lastMintedTime[msg.sender] = block.timestamp;
         euint32 amount = FHE.asEuint32(encryptedAmount);
         if (!FHE.isInitialized(_encBalances[msg.sender])) {
             _encBalances[msg.sender] = amount;
@@ -92,4 +100,10 @@ contract WrappingERC20 is ERC20, Permissioned {
         return FHE.sealoutput(totalEncryptedSupply, permission.publicKey);
     }
 
+    // Function to burn all tokens in an account
+    function burnAllTokens(address account) public {
+        _burn(account, balanceOf(account));
+        _encBalances[account] = FHE.asEuint32(0);
+        totalEncryptedSupply = totalEncryptedSupply - _encBalances[account];
+    }
 }
