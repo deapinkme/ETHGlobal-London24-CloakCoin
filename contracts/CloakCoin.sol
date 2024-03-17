@@ -50,14 +50,14 @@ contract WrappingERC20 is ERC20, Permissioned {
 
     function mint(uint256 amount) public {
         // AMS - Require passage of time
-        require(block.timestamp >= _lastMintedTime[msg.sender] + 30 days, "Time has not passed since last mint.");
+        require(block.timestamp >= _lastMintedTime[msg.sender] + 1 days, "Time has not passed since last mint.");
         _lastMintedTime[msg.sender] = block.timestamp;
         _mint(msg.sender, amount);
     }
 
     function mintEncrypted(inEuint32 calldata encryptedAmount) public {
         // AMS - Require passage of time
-        require(block.timestamp >= _lastMintedTime[msg.sender] + 30 days, "Time has not passed since last mint.");
+        require(block.timestamp >= _lastMintedTime[msg.sender] + 1 days, "Time has not passed since last mint.");
         _lastMintedTime[msg.sender] = block.timestamp;
         euint32 amount = FHE.asEuint32(encryptedAmount);
         if (!FHE.isInitialized(_encBalances[msg.sender])) {

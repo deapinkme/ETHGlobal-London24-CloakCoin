@@ -3,26 +3,27 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "dev": "next dev -- -p 3001",
+    "dev": "next dev -- -p 3002",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@airstack/node": "^0.0.5",
+    "@dynamic-labs/ethereum": "*",
+    "@dynamic-labs/sdk-react-core": "*",
+    "@dynamic-labs/wagmi-connector": "*",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.12",
     "@mui/material": "^5.15.11",
-    "@rainbow-me/rainbowkit": "^2.0.1",
-    "@tanstack/react-query": "^5.18.1",
-    "@wagmi/connectors": "^4.1.14",
     "axios": "^1.6.7",
     "dotenv": "^16.4.5",
     "next": "^14.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "ts-node": "^10.9.2",
-    "viem": "^2.7.3",
-    "wagmi": "^2.5.5"
+    "viem": "^1.21.4"
   },
   "devDependencies": {
     "@types/node": "^18.19.3",

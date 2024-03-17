@@ -1,53 +1,49 @@
 import "../styles/globals.css";
-import "@rainbow-me/rainbowkit/styles.css";
 import type { AppProps } from "next/app";
+import { sepolia } from "wagmi/chains";
+import {
+  DynamicContextProvider,
+  DynamicWidget,
+  EvmNetwork,
+} from "@dynamic-labs/sdk-react-core";
+import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 
-import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { WagmiProvider } from "wagmi";
-import { lineaTestnet, sepolia } from "wagmi/chains";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 
-// Define FHEnix chain configuration
-  const fhenixChain = {
-    id: "42069",
-    name: 'Fhenix Frontier',
-    network: 'fhenix',
-    nativeCurrency: { name: 'FHE Token', symbol: 'FHE', decimals: 18 },
-    rpcUrls: {
-      default: {
-        http: ["https://api.testnet.fhenix.zone:7747/"],
-      },
-      public: {
-        http: ["https://api.testnet.fhenix.zone:7747/"],
-      },
-    },
-    blockExplorers: {
-      default: {
-        name: 'Fhenix Explorer',
-        url: "https://explorer.testnet.fhenix.zone/",
-      },
-    },
-  }
+import { createPublicClient, http, createWalletClient, custom } from "viem";
 
-// Add FHEnix chain to the existing chains array
-const config = getDefaultConfig({
-  appName: "Cloak Coin App",
-  projectId: "YOUR_PROJECT_ID",
-  chains: [sepolia, fhenixChain], // Include fhenixChain here
-  ssr: true, // If your dApp uses server side rendering (SSR)
-});
-
-const client = new QueryClient();
+const evmNetworks: EvmNetwork[] = [{
+  blockExplorerUrls: [
+    "https://explorer.testnet.fhenix.zone/"
+  ],
+  chainId: 42069,
+  name: 'Fhenix Frontier',
+  iconUrls: [
+    "http://example.com" // TODO ????
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: "FHE Token",
+    symbol: "FHE"
+  },
+  networkId: "fhenix",
+  rpcUrls: [
+    "https://api.testnet.fhenix.zone:7747/"
+  ]
+}]
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={client}>
-        <RainbowKitProvider>
-          <Component {...pageProps} />
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <DynamicContextProvider 
+    settings={{ 
+      environmentId: 'c1ec8a24-888d-4482-acdf-49a70614aca5',
+      walletConnectors: [ EthereumWalletConnectors ],
+      evmNetworks
+    }}> 
+    <DynamicWagmiConnector>
+    <Component {...pageProps} />
+    </DynamicWagmiConnector>
+</DynamicContextProvider>
   );
 }
 
