@@ -1,4 +1,4 @@
-# Cloak Coin
+# <img src="public/CloakCoins.ico" alt="Logo" width="50"/> Cloak Coin
 
 Cloak Coin is a project designed as an anonymous loyalty or streak program, aimed at providing users with a tool to track their progress while maintaining anonymity. The program functions as a simple gamified streak counter, allowing users to monitor their own progress without revealing identifiable information to others.
 
